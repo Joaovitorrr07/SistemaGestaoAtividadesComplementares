@@ -4,10 +4,11 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import br.edu.ufape.backend.model.Usuario;
-import br.edu.ufape.backend.model.Role;
-import br.edu.ufape.backend.repository.UsuarioRepository;
 import br.edu.ufape.backend.exception.EmailJaCadastradoException;
+import br.edu.ufape.backend.exception.PerfilNaoPermitidoException;
+import br.edu.ufape.backend.model.Role;
+import br.edu.ufape.backend.model.Usuario;
+import br.edu.ufape.backend.repository.UsuarioRepository;
 
 @Service
 public class UsuarioService {
@@ -25,8 +26,12 @@ public class UsuarioService {
             throw new EmailJaCadastradoException(email);
         }
 
+        if (role != null && role != Role.ESTUDANTE) {
+            throw new PerfilNaoPermitidoException();
+        }
+
         String senhaHash = passwordEncoder.encode(senhaTexto);
-        Usuario usuario = new Usuario(nome, email, senhaHash, role);
+        Usuario usuario = new Usuario(nome, email, senhaHash, Role.ESTUDANTE);
 
         return usuarioRepository.save(usuario);
     }

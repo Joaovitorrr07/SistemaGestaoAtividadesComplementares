@@ -2,7 +2,6 @@ package br.edu.ufape.backend.dto;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import br.edu.ufape.backend.model.Role;
 import jakarta.validation.constraints.Size;
 
@@ -19,8 +18,7 @@ public class CadastroUsuarioRequest {
     @Size(min = 8, message = "senha deve ter no mínimo 8 caracteres")
     private String senha;
 
-    @NotNull(message = "Role é obrigatória")
-    private Role role;
+    private Role role = Role.ESTUDANTE;
 
     public String getNome() {
         return nome;

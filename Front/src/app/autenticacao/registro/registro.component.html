@@ -1,0 +1,183 @@
+<div class="bg-surface min-h-screen flex flex-col font-sans">
+  <!-- Top Header Minimalista -->
+  <header class="bg-surface border-b border-outline-variant shadow-sm w-full top-0 flex justify-center items-center px-margin-desktop max-w-container-max mx-auto h-16">
+    <div class="font-headline-lg text-headline-lg font-bold text-primary">SGAC - UFAPE</div>
+  </header>
+
+  <!-- Conteúdo Principal -->
+  <main class="flex-grow flex items-center justify-center p-gutter">
+    <div class="bg-surface-container-lowest w-full max-w-lg rounded-xl shadow-[0px_4px_20px_rgba(0,0,0,0.05)] border border-surface-variant p-margin-desktop">
+      
+      <div class="text-center mb-8">
+        <h1 class="font-headline-lg text-headline-lg text-on-surface mb-2">Crie sua conta</h1>
+        <p class="font-body-md text-body-md text-on-surface-variant">Preencha os dados abaixo para acessar o sistema</p>
+      </div>
+
+      <!-- Alerta Global de Erro -->
+      @if (errorMessage()) {
+        <div class="bg-error-container border border-error/20 rounded-lg p-4 mb-6 flex items-start gap-3">
+          <span class="material-symbols-outlined text-error" style="font-variation-settings: 'FILL' 1;">error</span>
+          <p class="font-body-md text-body-md text-on-error-container mt-0.5">
+            {{ errorMessage() }}
+          </p>
+        </div>
+      }
+
+      <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-6">
+        
+        <!-- Nome Completo -->
+        <div>
+          <label class="block font-label-sm text-label-sm text-on-surface mb-1" for="fullName">
+            Nome Completo <span class="text-error">*</span>
+          </label>
+          <input
+            id="fullName"
+            type="text"
+            formControlName="fullName"
+            class="form-input w-full border rounded-lg px-4 py-2 bg-surface-container-lowest text-on-surface font-body-md text-body-md transition-shadow"
+            [ngClass]="{
+              'border-error focus:border-error focus:ring-error/20': isFieldInvalid('fullName'),
+              'border-outline-variant': !isFieldInvalid('fullName')
+            }"
+            placeholder="Seu nome completo"
+          />
+          @if (isFieldInvalid('fullName')) {
+            <p class="font-label-sm text-label-sm text-error mt-1 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">info</span>
+              Nome completo é obrigatório (mínimo 3 caracteres).
+            </p>
+          }
+        </div>
+
+        <!-- E-mail / Matrícula -->
+        <div>
+          <label class="block font-label-sm text-label-sm text-on-surface mb-1" for="emailOrRegistration">
+            E-mail Institucional ou Matrícula <span class="text-error">*</span>
+          </label>
+          <input
+            id="emailOrRegistration"
+            type="text"
+            formControlName="emailOrRegistration"
+            class="form-input w-full border rounded-lg px-4 py-2 bg-surface-container-lowest text-on-surface font-body-md text-body-md transition-shadow"
+            [ngClass]="{
+              'border-error focus:border-error focus:ring-error/20': isFieldInvalid('emailOrRegistration'),
+              'border-outline-variant': !isFieldInvalid('emailOrRegistration')
+            }"
+            placeholder="usuario@ufape.edu.br ou 2023000123"
+          />
+          @if (isFieldInvalid('emailOrRegistration')) {
+            <p class="font-label-sm text-label-sm text-error mt-1 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">info</span>
+              Formato de e-mail inválido ou matrícula incompleta.
+            </p>
+          }
+        </div>
+
+        <!-- Senha -->
+        <div>
+          <label class="block font-label-sm text-label-sm text-on-surface mb-1" for="password">
+            Senha <span class="text-error">*</span>
+          </label>
+          <div class="relative">
+            <input
+              id="password"
+              [type]="showPassword() ? 'text' : 'password'"
+              formControlName="password"
+              class="form-input w-full border rounded-lg px-4 py-2 pr-10 bg-surface-container-lowest text-on-surface font-body-md text-body-md transition-shadow"
+              [ngClass]="{
+                'border-error focus:border-error focus:ring-error/20': isFieldInvalid('password'),
+                'border-outline-variant': !isFieldInvalid('password')
+              }"
+            />
+            <button
+              type="button"
+              (click)="togglePasswordVisibility('password')"
+              aria-label="Alternar visibilidade da senha"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary transition-colors focus:outline-none"
+            >
+              <span class="material-symbols-outlined">
+                {{ showPassword() ? 'visibility' : 'visibility_off' }}
+              </span>
+            </button>
+          </div>
+          @if (isFieldInvalid('password')) {
+            <p class="font-label-sm text-label-sm text-error mt-1 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">info</span>
+              A senha deve conter no mínimo 6 caracteres.
+            </p>
+          }
+        </div>
+
+        <!-- Confirmar Senha -->
+        <div>
+          <label class="block font-label-sm text-label-sm text-on-surface mb-1" for="confirmPassword">
+            Confirmar Senha <span class="text-error">*</span>
+          </label>
+          <div class="relative">
+            <input
+              id="confirmPassword"
+              [type]="showConfirmPassword() ? 'text' : 'password'"
+              formControlName="confirmPassword"
+              class="form-input w-full border rounded-lg px-4 py-2 pr-10 bg-surface-container-lowest text-on-surface font-body-md text-body-md transition-shadow"
+              [ngClass]="{
+                'border-error focus:border-error focus:ring-error/20': isFieldInvalid('confirmPassword') || registerForm.hasError('passwordMismatch'),
+                'border-outline-variant': !isFieldInvalid('confirmPassword') && !registerForm.hasError('passwordMismatch')
+              }"
+            />
+            <button
+              type="button"
+              (click)="togglePasswordVisibility('confirmPassword')"
+              aria-label="Alternar visibilidade da confirmação de senha"
+              class="absolute right-3 top-1/2 -translate-y-1/2 text-on-surface-variant hover:text-primary transition-colors focus:outline-none"
+            >
+              <span class="material-symbols-outlined">
+                {{ showConfirmPassword() ? 'visibility' : 'visibility_off' }}
+              </span>
+            </button>
+          </div>
+          @if (registerForm.hasError('passwordMismatch') && registerForm.get('confirmPassword')?.touched) {
+            <p class="font-label-sm text-label-sm text-error mt-1 flex items-center gap-1">
+              <span class="material-symbols-outlined text-[16px]">info</span>
+              As senhas informadas não coincidem.
+            </p>
+          }
+        </div>
+
+        <!-- Botão de Ação -->
+        <div class="pt-2">
+          <button
+            type="submit"
+            [disabled]="isLoading()"
+            class="w-full bg-primary-container text-on-primary font-title-md text-title-md py-3 rounded-lg shadow-sm hover:shadow-md transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex justify-center items-center gap-2"
+          >
+            @if (isLoading()) {
+              <span class="animate-spin rounded-full h-5 w-5 border-2 border-on-primary border-t-transparent"></span>
+            }
+            {{ isLoading() ? 'Criando conta...' : 'Criar Conta' }}
+          </button>
+        </div>
+      </form>
+
+      <!-- Link para Login -->
+      <div class="mt-8 text-center border-t border-surface-variant pt-6">
+        <a routerLink="/autenticacao/login" class="font-body-md text-body-md text-primary hover:underline hover:text-primary-container transition-colors">
+          Já tem uma conta? Faça login
+        </a>
+      </div>
+    </div>
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="bg-surface-container-highest w-full py-8 px-margin-desktop max-w-container-max mx-auto flex flex-col md:flex-row justify-between items-center gap-4 border-t border-outline-variant mt-auto">
+    <div class="font-title-md text-title-md font-bold text-primary">SGAC UFAPE</div>
+    <p class="font-body-md text-body-md text-on-surface-variant text-center md:text-left">
+      © 2026 UFAPE - Universidade Federal do Agreste de Pernambuco. Todos os direitos reservados.
+    </p>
+    <div class="flex gap-4">
+      <a href="#" class="font-body-md text-body-md text-on-surface-variant hover:underline hover:text-primary transition-colors opacity-90 hover:opacity-100">Portal UFAPE</a>
+      <a href="#" class="font-body-md text-body-md text-on-surface-variant hover:underline hover:text-primary transition-colors opacity-90 hover:opacity-100">Suporte Técnico</a>
+      <a href="#" class="font-body-md text-body-md text-on-surface-variant hover:underline hover:text-primary transition-colors opacity-90 hover:opacity-100">Privacidade</a>
+      <a href="#" class="font-body-md text-body-md text-on-surface-variant hover:underline hover:text-primary transition-colors opacity-90 hover:opacity-100">Termos de Uso</a>
+    </div>
+  </footer>
+</div>
