@@ -187,7 +187,7 @@ public class AtividadeComplementarService {
     }
 
     @Transactional
-    public AtividadeResponse atualizarAtividade(Long id, CadastroAtividadeRequest request, String emailEstudante) {
+    public AtividadeResponseDTO atualizarAtividade(Long id, CadastroAtividadeRequestDTO request, String emailEstudante) {
         validarDados(request);
 
         Estudante estudante = obterEstudante(emailEstudante);
@@ -203,11 +203,11 @@ public class AtividadeComplementarService {
         atividade.setCategoria(request.categoria());
 
         AtividadeComplementar atividadeAtualizada = atividadeRepository.save(atividade);
-        return new AtividadeResponse(atividadeAtualizada);
+        return new AtividadeResponseDTO(atividadeAtualizada);
     }
 
-    private void validarDados(CadastroAtividadeRequest request) {
-        Set<ConstraintViolation<CadastroAtividadeRequest>> violacoes = validator.validate(request);
+    private void validarDados(CadastroAtividadeRequestDTO request) {
+        Set<ConstraintViolation<CadastroAtividadeRequestDTO>> violacoes = validator.validate(request);
         if (!violacoes.isEmpty()) {
             throw new ConstraintViolationException(violacoes);
         }
